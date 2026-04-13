@@ -16,9 +16,6 @@ import { router } from './routes';
 import { AppProvider } from './context/AppContext';
 import { APP_CONFIG, TMDB_CONFIG, GEMINI_CONFIG, isDevelopment } from './config/env';
 import '../styles/fonts.css';
-import Home from "./Home";
-import ScriptGenerator from "./components/ScriptGenerator";
-
 
 // Global dark theme styles
 const globalStyle = `

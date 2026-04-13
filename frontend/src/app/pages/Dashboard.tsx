@@ -15,6 +15,7 @@ import { CategoryTab } from '../components/tabs/CategoryTab';
 import { LoadingOverlay } from '../components/LoadingSpinner';
 import { DataSourceIndicator } from '../components/DataSourceIndicator';
 import { ChatBot } from '../components/ChatBot';
+import { ScriptGenerator } from '../components/ScriptGenerator';
 
 type Tab = 'recommendations' | 'summary' | 'reviews' | 'qa' | 'trending' | 'bollywood' | 'hollywood' | 'tollywood' | 'kdrama' | 'anime';
 
@@ -150,6 +151,9 @@ export const Dashboard: React.FC = () => {
       
       {/* AI ChatBot Assistant */}
       <ChatBot />
+
+      {/* Script Generator Tool */}
+      <ScriptGenerator />
     </div>
   );
 };

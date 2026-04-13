@@ -204,3 +204,77 @@ export const askMovieQuestion = async (question: string, movieContext?: string) 
     };
   }
 };
+
+// ────────────────────────────────────────────
+// Script Generator Endpoints
+// ────────────────────────────────────────────
+
+export interface ScriptCharacter {
+  name: string;
+  role?: string;
+  traits?: string;
+}
+
+export interface ScriptCriteria {
+  idea: string;
+  language?: string;
+  length?: string;
+  style?: string;
+  genre?: string;
+  characters?: ScriptCharacter[];
+  setting?: string;
+  time?: string;
+  tone?: string;
+}
+
+export const generateScript = async (criteria: ScriptCriteria) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/generate_script`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(criteria),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+      console.error('Backend Error Details:', errorData);
+      throw new Error(`Script generation failed: ${errorData.detail || response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+      console.error('Error generating script:', error);
+      // Return mock script for demo if backend is not running
+      return {
+        script: `⚠️ [AI OFFLINE - SHOWING FALLBACK]\n\nINT. ABANDONED WAREHOUSE - NIGHT\n\nRain drums against the rusted corrugated roof. ARJUN (40s, weary) stands in the shadows, his gun drawn but lowered.\n\nRANA (50s, impeccably dressed) sits on a crate, lighting a cigar with steady hands.\n\nRANA: You're late, Arjun. Even for a man who's lost everything.\n\nARJUN: I haven't lost the ability to pull a trigger, Rana.`,
+        specifications: {
+        style: criteria.style || 'Hollywood',
+        genre: criteria.genre || 'Crime Thriller',
+        language: criteria.language || 'English',
+        length: criteria.length || 'Short (1-2 pages)',
+        setting: criteria.setting || 'Abandoned Warehouse',
+        time: criteria.time || 'Night',
+        tone: criteria.tone || 'Tense'
+      }
+    };
+  }
+};
+
+export const refineScript = async (script: string, action: 'intense' | 'humorous' | 'dialogue') => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/refine_script`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ script, action }),
+    });
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
+      console.error('Backend Error Details:', errorData);
+      throw new Error(`Script refinement failed: ${errorData.detail || response.statusText}`);
+    }
+    return await response.json();
+  } catch (error) {
+      console.error('Error refining script:', error);
+      return {
+        script: script + "\n\n⚠️ [AI OFFLINE - SHOWING FALLBACK]\n(AI refinement simulation: Added more " + action + " elements to the scene.)"
+      };
+    }
+};
