@@ -1,84 +1,136 @@
-# CineVerse: AI Entertainment Hub
+# 🎬 CineVerse: AI Entertainment Hub
 
-A comprehensive AI-powered entertainment platform featuring movie recommendations, an intelligent chatbot assistant, and a professional-grade screenplay generator.
+A comprehensive **AI-powered entertainment platform** featuring movie recommendations, an intelligent chatbot assistant, and a professional-grade screenplay generator.
+
+---
+
+## 📌 Project Information
+
+| Field                 | Details                         |
+| --------------------- | ------------------------------- |
+| **Division**          | D6                              |
+| **Group**             | Group 03D6                      |
+| **Project No**        | GAI-14                          |
+| **Subject**           | Gen AI                          |
+| **Problem Statement** | Entertainment Content Generator |
+| **Tools Used**        | Python, Vector DB, LLM API      |
+
+---
+
+## 📝 Project Description
+
+CineVerse is a specialized **GenAI content generation tool** designed for entertainment professionals. Using advanced **Prompt Engineering** techniques, the platform transforms basic ideas into **high-quality professional outputs** such as screenplay scenes.
+
+The system ensures:
+
+* Consistency in tone and formatting
+* Industry-standard storytelling structure
+* Reduced manual effort in drafting scripts and creative content
+
+---
 
 ## 🌟 Key Features
 
 ### 🎬 CineVerse Dashboard
-- **Personalized Recommendations**: AI-driven movie suggestions based on your preferences.
-- **Sentiment Analysis**: Real-time review sentiment breakdown (Positive, Neutral, Negative).
-- **Interactive Movie Exploration**: Detailed views, trailers, and cast information.
-- **Category Tabs**: Seamlessly explore Bollywood, Hollywood, Tollywood, K-Drama, and Anime.
+
+* **Personalized Recommendations**: AI-driven movie suggestions based on user preferences
+* **Sentiment Analysis**: Real-time classification (Positive, Neutral, Negative)
+* **Interactive Movie Exploration**: Trailers, cast details, and insights
+* **Category Tabs**: Bollywood, Hollywood, Tollywood, K-Drama, Anime
+
+---
 
 ### 💬 CineVerse Assistant (ChatBot)
-- **AI Movie Expert**: Ask questions about any film, director, or genre.
-- **Natural Language Understanding**: Powered by Google Gemini AI for human-like conversations.
-- **Contextual Suggestions**: Get movie ideas directly within the chat interface.
+
+* **AI Movie Expert**: Ask about movies, directors, genres
+* **Natural Language Understanding**: Powered by Google Gemini AI
+* **Contextual Suggestions**: Smart recommendations within chat
+
+---
 
 ### ✍️ Professional Script Generator
-- **Multi-Genre Support**: Generate screenplays for Hollywood, Bollywood, K-Drama, and Anime styles.
-- **Customizable Criteria**: Specify scene ideas, languages (Hindi, English, Hinglish, etc.), characters, setting, and tone.
-- **AI Iteration Tools**:
-  - **Intense**: Amplify the drama and stakes of your scene.
-  - **Humorous**: Inject wit and comedic timing.
-  - **Dialogue Only**: Refine character voices and subtext without changing the action.
-- **RAG-Powered**: Uses Retrieval-Augmented Generation (FAISS) to match professional script patterns.
+
+* **Multi-Genre Support**: Hollywood, Bollywood, K-Drama, Anime
+
+* **Customizable Inputs**:
+
+  * Scene ideas
+  * Language (Hindi, English, Hinglish, etc.)
+  * Characters, setting, tone
+
+* **AI Iteration Tools**:
+
+  * **Intense** → Boost drama and stakes
+  * **Humorous** → Add comedy and wit
+  * **Dialogue Only** → Refine character conversations
+
+* **RAG-Powered System**:
+
+  * Uses FAISS for retrieval
+  * Matches professional screenplay patterns
 
 ---
 
 ## 🛠️ Tech Stack
 
 ### Backend
-- **Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python)
-- **AI Model**: [Google Gemini AI](https://ai.google.dev/)
-- **Vector Store**: [FAISS](https://github.com/facebookresearch/faiss) (for Retrieval-Augmented Generation)
-- **Embeddings**: Sentence-Transformers
-- **Environment**: Python 3.10+
+
+* **Framework**: FastAPI (Python)
+* **AI Model**: Google Gemini AI
+* **Vector Store**: FAISS
+* **Embeddings**: Sentence-Transformers
+* **Environment**: Python 3.10+
+
+---
 
 ### Frontend
-- **Framework**: [React](https://react.dev/) + [Vite](https://vitejs.dev/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Animations**: [Motion](https://motion.dev/) (framer-motion)
-- **Icons**: [Lucide-React](https://lucide.dev/)
-- **Components**: Radix UI / Shadcn UI
+
+* **Framework**: React + Vite
+* **Styling**: Tailwind CSS
+* **Animations**: Framer Motion
+* **Icons**: Lucide-React
+* **UI Components**: Radix UI / Shadcn UI
 
 ---
 
 ## 🚀 Getting Started
 
 ### 1. Prerequisites
-- Python 3.10+ installed
-- Node.js 18+ and npm installed
-- [Google Gemini API Key](https://aistudio.google.com/app/apikey)
+
+* Python 3.10+
+* Node.js 18+ and npm
+* Google Gemini API Key
+
+---
 
 ### 2. Backend Setup
-```bash
-# Navigate to backend directory
-cd backend
 
-# Install dependencies
+```bash
+cd backend
 pip install -r requirements.txt
 
-# Create .env file and add your Gemini API Key
+# Add API key
 echo "GOOGLE_API_KEY='your_api_key_here'" > .env
 
-# Start the server
+# Run server
 python server.py
 ```
-The backend will be running at `http://localhost:8000`.
+
+Backend runs at:
+👉 [http://localhost:8000](http://localhost:8000)
+
+---
 
 ### 3. Frontend Setup
+
 ```bash
-# Navigate to frontend directory
 cd frontend
-
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
 ```
-The application will be available at `http://localhost:5173`.
+
+Frontend runs at:
+👉 [http://localhost:5173](http://localhost:5173)
 
 ---
 
@@ -86,21 +138,37 @@ The application will be available at `http://localhost:5173`.
 
 ```text
 Entertainment-Script-Generator/
-├── backend/                # FastAPI Python Server
-│   ├── pipeline.py         # AI Script Generation Pipeline
-│   ├── server.py           # API Endpoints
-│   ├── prompts.py          # AI Prompt Templates
-│   ├── rag_manager.py      # Vector search logic
-│   └── requirements.txt    # Python dependencies
-├── frontend/               # Vite React Application
+├── backend/
+│   ├── pipeline.py
+│   ├── server.py
+│   ├── prompts.py
+│   ├── rag_manager.py
+│   └── requirements.txt
+│
+├── frontend/
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── components/ # UI Components (ChatBot, ScriptGenerator, etc.)
-│   │   │   ├── services/   # API Services (backend.ts, tmdb.ts)
-│   │   │   └── pages/      # Main Dashboard and Login
-│   └── package.json        # Frontend dependencies
-└── README.md               # You are here!
+│   │   │   ├── components/
+│   │   │   ├── services/
+│   │   │   └── pages/
+│   └── package.json
+│
+└── README.md
 ```
 
+---
+
+## 👥 Team Members
+
+| # | Name              | Enrollment No |
+| - | ----------------- | ------------- |
+| 1 | Maitry Banduke    | EN22CS301571  |
+| 2 | Mohd Quasim       | EN22CS301603  |
+| 3 | Mrunali Kamerikar | EN22CS301618  |
+| 4 | Muskan Asija      | EN22CS301623  |
+
+---
+
 ## 📝 License
-This project is for educational purposes as part of the B.Tech 8th Semester GenAI coursework.
+
+This project is developed for **educational purposes** as part of the **B.Tech 8th Semester GenAI coursework**.
