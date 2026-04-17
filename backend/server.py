@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Optional, Dict, Any
 import os
+import json
+from datetime import datetime
 from dotenv import load_dotenv
 from pipeline import ScriptPipeline
 from rag_manager import RAGManager
@@ -59,6 +61,32 @@ if not api_key:
     print("Warning: GOOGLE_API_KEY not found in environment.")
 pipeline = ScriptPipeline(api_key=api_key)
 
+# Persistence Helper
+SCRIPTS_FILE = "user_scripts.json"
+
+def save_to_history(user_id: str, script_data: Dict[str, Any]):
+    try:
+        if os.path.exists(SCRIPTS_FILE):
+            with open(SCRIPTS_FILE, "r") as f:
+                history = json.load(f)
+        else:
+            history = {}
+        
+        if user_id not in history:
+            history[user_id] = []
+        
+        # Add timestamp
+        script_data["timestamp"] = datetime.now().isoformat()
+        history[user_id].insert(0, script_data)  # Newest first
+        
+        # Limit to last 20 scripts
+        history[user_id] = history[user_id][:20]
+        
+        with open(SCRIPTS_FILE, "w") as f:
+            json.dump(history, f)
+    except Exception as e:
+        print(f"Error saving history: {e}")
+
 class Character(BaseModel):
     name: str
     role: Optional[str] = ""
@@ -66,6 +94,7 @@ class Character(BaseModel):
 
 class ScriptCriteria(BaseModel):
     idea: str
+    user_id: Optional[str] = "guest"  # Added user_id
     language: Optional[str] = "English"
     length: Optional[str] = "Medium (3-5 pages)"
     style: Optional[str] = "Hollywood"
@@ -78,10 +107,22 @@ class ScriptCriteria(BaseModel):
 class RefineRequest(BaseModel):
     script: str
     action: str  # "intense", "humorous", "dialogue"
+    user_id: Optional[str] = "guest"  # Added user_id
 
 @app.get("/")
 async def root():
     return {"message": "Entertainment Script Generator API is running"}
+
+@app.get("/get_user_scripts/{user_id}")
+async def get_user_scripts(user_id: str):
+    try:
+        if os.path.exists(SCRIPTS_FILE):
+            with open(SCRIPTS_FILE, "r") as f:
+                history = json.load(f)
+            return history.get(user_id, [])
+        return []
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/generate_script")
 async def generate_script(criteria: ScriptCriteria):
@@ -103,10 +144,15 @@ async def generate_script(criteria: ScriptCriteria):
         if generated_scene.startswith("ERROR:"):
             raise HTTPException(status_code=500, detail=generated_scene)
             
-        return {
+        result = {
             "script": generated_scene,
             "specifications": structured_input
         }
+        
+        # Save to history
+        save_to_history(criteria.user_id, result)
+        
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -116,7 +162,13 @@ async def refine_script(request: RefineRequest):
         new_scene = pipeline.iterate_scene(request.script, request.action)
         if new_scene.startswith("ERROR:"):
             raise HTTPException(status_code=500, detail=new_scene)
-        return {"script": new_scene}
+            
+        result = {"script": new_scene}
+        
+        # Save to history
+        save_to_history(request.user_id, result)
+        
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

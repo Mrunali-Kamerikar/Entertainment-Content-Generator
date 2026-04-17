@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, Sparkles, Scroll, FileText, Send, Plus, Trash2, Wand2, RefreshCw } from 'lucide-react';
-import { generateScript, refineScript, ScriptCharacter, ScriptCriteria } from '../services/backend';
+import { X, Sparkles, Scroll, FileText, Send, Plus, Trash2, Wand2, RefreshCw, Download, History } from 'lucide-react';
+import { generateScript, refineScript, getUserScripts, ScriptCharacter, ScriptCriteria } from '../services/backend';
 
 export const ScriptGenerator: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +17,20 @@ export const ScriptGenerator: React.FC = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [activeIteration, setActiveIteration] = useState<'intense' | 'humorous' | 'dialogue' | null>(null);
   const [generatedScript, setGeneratedScript] = useState<string | null>(null);
-  const [activeView, setActiveView] = useState<'form' | 'script'>('form');
+  const [activeView, setActiveView] = useState<'form' | 'script' | 'history'>('form');
+  const [history, setHistory] = useState<any[]>([]);
+
+  useEffect(() => {
+    const userId = localStorage.getItem('userId') || 'guest';
+    if (userId && isOpen) {
+      loadHistory(userId);
+    }
+  }, [isOpen]);
+
+  const loadHistory = async (userId: string) => {
+    const scripts = await getUserScripts(userId);
+    setHistory(scripts);
+  };
 
   const handleAddCharacter = () => {
     setCharacters([...characters, { name: '', role: '', traits: '' }]);
@@ -37,8 +50,10 @@ export const ScriptGenerator: React.FC = () => {
     if (!idea.trim()) return;
 
     setIsGenerating(true);
+    const userId = localStorage.getItem('userId') || 'guest';
     const criteria: ScriptCriteria = {
       idea,
+      user_id: userId,
       language,
       length,
       style,
@@ -53,6 +68,7 @@ export const ScriptGenerator: React.FC = () => {
     setGeneratedScript(result.script);
     setIsGenerating(false);
     setActiveView('script');
+    loadHistory(userId); // Refresh history
   };
 
   const handleRefine = async (action: 'intense' | 'humorous' | 'dialogue') => {
@@ -63,6 +79,21 @@ export const ScriptGenerator: React.FC = () => {
     setGeneratedScript(result.script);
     setIsGenerating(false);
     setActiveIteration(null);
+    const userId = localStorage.getItem('userId') || 'guest';
+    loadHistory(userId); // Refresh history
+  };
+
+  const handleDownload = () => {
+    if (!generatedScript) return;
+    const blob = new Blob([generatedScript], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `script_${new Date().getTime()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   const handleReset = () => {
@@ -138,20 +169,75 @@ export const ScriptGenerator: React.FC = () => {
                   <p className="text-white/70 text-xs m-0">AI-Powered Screenwriting</p>
                 </div>
               </div>
-              <motion.button
-                whileHover={{ scale: 1.1, rotate: 90 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-full flex items-center justify-center border-0 cursor-pointer"
-                style={{ background: 'rgba(255,255,255,0.15)' }}
-              >
-                <X size={18} color="#fff" />
-              </motion.button>
+              <div className="flex items-center gap-2">
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setActiveView(activeView === 'history' ? 'form' : 'history')}
+                  className="w-8 h-8 rounded-full flex items-center justify-center border-0 cursor-pointer"
+                  style={{ background: 'rgba(255,255,255,0.15)' }}
+                  title="Script History"
+                >
+                  <History size={18} color="#fff" />
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.1, rotate: 90 }}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setIsOpen(false)}
+                  className="w-8 h-8 rounded-full flex items-center justify-center border-0 cursor-pointer"
+                  style={{ background: 'rgba(255,255,255,0.15)' }}
+                >
+                  <X size={18} color="#fff" />
+                </motion.button>
+              </div>
             </div>
 
             {/* Content Area */}
             <div className="flex-1 overflow-y-auto p-5 text-white">
-              {activeView === 'form' ? (
+              {activeView === 'history' ? (
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <h4 className="text-sm font-bold uppercase tracking-widest text-gray-400">Recent Scripts</h4>
+                    <button 
+                      onClick={() => setActiveView('form')}
+                      className="text-xs text-[#E50914] font-bold bg-transparent border-0 cursor-pointer"
+                    >
+                      Close History
+                    </button>
+                  </div>
+                  {history.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-10 opacity-50">
+                      <History size={40} className="mb-2" />
+                      <p className="text-sm">No scripts saved yet</p>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col gap-3">
+                      {history.map((item, idx) => (
+                        <div 
+                          key={idx}
+                          onClick={() => {
+                            setGeneratedScript(item.script);
+                            setActiveView('script');
+                          }}
+                          className="bg-white/5 hover:bg-white/10 p-3 rounded-xl cursor-pointer border border-white/5 transition-colors group"
+                        >
+                          <div className="flex justify-between items-start mb-1">
+                            <span className="text-xs font-bold text-[#E50914]">
+                              {item.specifications?.style || 'Script'} • {item.specifications?.genre || 'Scene'}
+                            </span>
+                            <span className="text-[10px] text-gray-500">
+                              {new Date(item.timestamp).toLocaleDateString()}
+                            </span>
+                          </div>
+                          <p className="text-xs text-gray-300 line-clamp-2 italic m-0">
+                            "{item.script.substring(0, 100)}..."
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ) : activeView === 'form' ? (
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col gap-1.5">
                     <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Your Scene Idea</label>
@@ -302,12 +388,21 @@ export const ScriptGenerator: React.FC = () => {
                     >
                       ← Back to settings
                     </button>
-                    <button 
-                      onClick={handleReset}
-                      className="bg-transparent border-0 text-gray-400 text-sm hover:text-white cursor-pointer"
-                    >
-                      Reset all
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={handleDownload}
+                        className="bg-white/10 hover:bg-white/20 text-white p-1.5 rounded-lg border-0 cursor-pointer flex items-center gap-2 text-xs"
+                        title="Download as TXT"
+                      >
+                        <Download size={14} /> Download
+                      </button>
+                      <button 
+                        onClick={handleReset}
+                        className="bg-transparent border-0 text-gray-400 text-sm hover:text-white cursor-pointer"
+                      >
+                        Reset
+                      </button>
+                    </div>
                   </div>
                   
                   <div className="flex-1 bg-black/40 border border-white/10 rounded-xl p-4 overflow-y-auto font-mono text-sm leading-relaxed whitespace-pre-wrap">

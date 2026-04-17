@@ -217,6 +217,7 @@ export interface ScriptCharacter {
 
 export interface ScriptCriteria {
   idea: string;
+  user_id?: string;
   language?: string;
   length?: string;
   style?: string;
@@ -228,11 +229,15 @@ export interface ScriptCriteria {
 }
 
 export const generateScript = async (criteria: ScriptCriteria) => {
+  // If user_id is not provided, use a default or get from localStorage
+  const userId = criteria.user_id || localStorage.getItem('userId') || 'guest';
+  const payload = { ...criteria, user_id: userId };
+
   try {
     const response = await fetch(`${BACKEND_URL}/generate_script`, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify(criteria),
+      body: JSON.stringify(payload),
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
@@ -259,11 +264,12 @@ export const generateScript = async (criteria: ScriptCriteria) => {
 };
 
 export const refineScript = async (script: string, action: 'intense' | 'humorous' | 'dialogue') => {
+  const userId = localStorage.getItem('userId') || 'guest';
   try {
     const response = await fetch(`${BACKEND_URL}/refine_script`, {
       method: 'POST',
       headers: getHeaders(),
-      body: JSON.stringify({ script, action }),
+      body: JSON.stringify({ script, action, user_id: userId }),
     });
     if (!response.ok) {
       const errorData = await response.json().catch(() => ({ detail: 'Unknown error' }));
@@ -274,7 +280,20 @@ export const refineScript = async (script: string, action: 'intense' | 'humorous
   } catch (error) {
       console.error('Error refining script:', error);
       return {
-        script: script + "\n\n⚠️ [AI OFFLINE - SHOWING FALLBACK]\n(AI refinement simulation: Added more " + action + " elements to the scene.)"
-      };
-    }
+      script: script + "\n\n⚠️ [AI OFFLINE - SHOWING FALLBACK]\n(AI refinement simulation: Added more " + action + " elements to the scene.)"
+    };
+  }
+};
+
+export const getUserScripts = async (userId: string) => {
+  try {
+    const response = await fetch(`${BACKEND_URL}/get_user_scripts/${userId}`, {
+      headers: getHeaders(),
+    });
+    if (!response.ok) throw new Error('Failed to fetch user scripts');
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching user scripts:', error);
+    return [];
+  }
 };
