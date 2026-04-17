@@ -1,19 +1,29 @@
-# 🎬 CineVerse: AI Entertainment Hub
+# 📘 CineVerse → Entertainment Content Generator
 
-A comprehensive **AI-powered entertainment platform** featuring movie recommendations, an intelligent chatbot assistant, and a professional-grade screenplay generator.
+## 🧾 Project Assignment Details
+
+* **Division**: D6
+* **Group**: Group 03D6
+* **Project No**: GAI-14
+* **Subject**: Gen AI
+* **Tools Used**: Python, Vector Database, LLM API
 
 ---
 
-## 📌 Project Information
+## 👥 Team Members
 
-| Field                 | Details                         |
-| --------------------- | ------------------------------- |
-| **Division**          | D6                              |
-| **Group**             | Group 03D6                      |
-| **Project No**        | GAI-14                          |
-| **Subject**           | Gen AI                          |
-| **Problem Statement** | Entertainment Content Generator |
-| **Tools Used**        | Python, Vector DB, LLM API      |
+| # | Name              | Enrollment No |
+| - | ----------------- | ------------- |
+| 1 | Maitry Banduke    | EN22CS301571  |
+| 2 | Mohd Quasim       | EN22CS301603  |
+| 3 | Mrunali Kamerikar | EN22CS301618  |
+| 4 | Muskan Asija      | EN22CS301623  |
+
+---
+
+# 🎬 CineVerse: Entertainment Content Generator
+
+A comprehensive AI-powered platform for entertainment professionals, combining intelligent recommendations, conversational AI, and advanced script generation.
 
 ---
 
@@ -69,74 +79,89 @@ The system ensures:
   * Uses FAISS for retrieval
   * Matches professional screenplay patterns
 
+* **📥 Download Option**: Download generated scripts as `.txt` files
+
+* **🕘 Script History**: View and access all previously generated scripts
+
+---
+
+## 🔄 Application Workflow
+
+1. **Authentication** – Users log in to access personalized features and script history
+2. **Exploration** – Browse movies and analyze review sentiments
+3. **Consultation** – Interact with the AI chatbot for queries and recommendations
+4. **Creation**:
+
+   * Enter script idea
+   * Configure preferences (language, genre, tone, etc.)
+   * Backend processes using FastAPI, RAG, and Gemini AI
+   * Refine output using iteration tools
+5. **Management** – Save, revisit, and download scripts
+
 ---
 
 ## 🛠️ Tech Stack
 
-### Backend
+### 🔙 Backend
 
-* **Framework**: FastAPI (Python)
-* **AI Model**: Google Gemini AI
-* **Vector Store**: FAISS
-* **Embeddings**: Sentence-Transformers
-* **Environment**: Python 3.10+
+* Python 3.10+
+* FastAPI
+* Google Gemini AI (`google-genai` SDK)
+* FAISS (Vector Store for RAG)
+* Sentence Transformers (`all-MiniLM-L6-v2`)
+* JSON-based storage
 
----
+### 🎨 Frontend
 
-### Frontend
-
-* **Framework**: React + Vite
-* **Styling**: Tailwind CSS
-* **Animations**: Framer Motion
-* **Icons**: Lucide-React
-* **UI Components**: Radix UI / Shadcn UI
+* React + Vite
+* Tailwind CSS
+* Radix UI & Shadcn UI
+* Framer Motion
+* Lucide React Icons
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Prerequisites
+### 1️⃣ Prerequisites
 
 * Python 3.10+
-* Node.js 18+ and npm
+* Node.js 18+
 * Google Gemini API Key
 
 ---
 
-### 2. Backend Setup
+### 2️⃣ Backend Setup
 
-```bash
+```bash id="b2t9xz"
 cd backend
 pip install -r requirements.txt
 
 # Add API key
 echo "GOOGLE_API_KEY='your_api_key_here'" > .env
 
-# Run server
 python server.py
 ```
 
-Backend runs at:
-👉 [http://localhost:8000](http://localhost:8000)
+Backend runs at: `http://localhost:8000`
 
 ---
 
-### 3. Frontend Setup
+### 3️⃣ Frontend Setup
 
-```bash
+```bash id="p4z8kj"
 cd frontend
 npm install
 npm run dev
 ```
 
-Frontend runs at:
-👉 [http://localhost:5173](http://localhost:5173)
+Frontend runs at: `http://localhost:5173`
 
 ---
 
 ## 📂 Project Structure
 
-```text
+```text id="k7v3nc"
 Entertainment-Script-Generator/
 ├── backend/
 │   ├── pipeline.py
@@ -144,7 +169,6 @@ Entertainment-Script-Generator/
 │   ├── prompts.py
 │   ├── rag_manager.py
 │   └── requirements.txt
-│
 ├── frontend/
 │   ├── src/
 │   │   ├── app/
@@ -152,23 +176,11 @@ Entertainment-Script-Generator/
 │   │   │   ├── services/
 │   │   │   └── pages/
 │   └── package.json
-│
 └── README.md
 ```
 
 ---
 
-## 👥 Team Members
-
-| # | Name              | Enrollment No |
-| - | ----------------- | ------------- |
-| 1 | Maitry Banduke    | EN22CS301571  |
-| 2 | Mohd Quasim       | EN22CS301603  |
-| 3 | Mrunali Kamerikar | EN22CS301618  |
-| 4 | Muskan Asija      | EN22CS301623  |
-
----
-
 ## 📝 License
 
-This project is developed for **educational purposes** as part of the **B.Tech 8th Semester GenAI coursework**.
+This project is developed for educational purposes as part of B.Tech 8th Semester GenAI coursework.
